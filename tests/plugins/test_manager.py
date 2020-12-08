@@ -6,7 +6,9 @@ import logging
 import asyncio
 from hbmqtt.plugins.manager import PluginManager
 
-formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+formatter = (
+    "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+)
 logging.basicConfig(level=logging.INFO, format=formatter)
 
 
@@ -63,7 +65,7 @@ class TestPluginManager(unittest.TestCase):
 
     def test_map_coro(self):
         async def call_coro():
-            await manager.map_plugin_coro('test_coro')
+            await manager.map_plugin_coro("test_coro")
 
         manager = PluginManager("hbmqtt.test.plugins", context=None, loop=self.loop)
         self.loop.run_until_complete(call_coro())
@@ -72,7 +74,7 @@ class TestPluginManager(unittest.TestCase):
 
     def test_map_coro_return(self):
         async def call_coro():
-            return (await manager.map_plugin_coro('ret_coro'))
+            return await manager.map_plugin_coro("ret_coro")
 
         manager = PluginManager("hbmqtt.test.plugins", context=None, loop=self.loop)
         ret = self.loop.run_until_complete(call_coro())
@@ -84,8 +86,9 @@ class TestPluginManager(unittest.TestCase):
         Run plugin coro but expect no return as an empty filter is given
         :return:
         """
+
         async def call_coro():
-            return (await manager.map_plugin_coro('ret_coro', filter_plugins=[]))
+            return await manager.map_plugin_coro("ret_coro", filter_plugins=[])
 
         manager = PluginManager("hbmqtt.test.plugins", context=None, loop=self.loop)
         ret = self.loop.run_until_complete(call_coro())

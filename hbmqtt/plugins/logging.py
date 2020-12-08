@@ -13,7 +13,9 @@ class EventLoggerPlugin:
         self.context = context
 
     async def log_event(self, *args, **kwargs):
-        self.context.logger.info("### '%s' EVENT FIRED ###" % kwargs['event_name'].replace('old', ''))
+        self.context.logger.info(
+            "### '%s' EVENT FIRED ###" % kwargs["event_name"].replace("old", "")
+        )
 
     def __getattr__(self, name):
         if name.startswith("on_"):
@@ -25,19 +27,23 @@ class PacketLoggerPlugin:
         self.context = context
 
     async def on_mqtt_packet_received(self, *args, **kwargs):
-        packet = kwargs.get('packet')
-        session = kwargs.get('session', None)
+        packet = kwargs.get("packet")
+        session = kwargs.get("session", None)
         if self.context.logger.isEnabledFor(logging.DEBUG):
             if session:
-                self.context.logger.debug("%s <-in-- %s" % (session.client_id, repr(packet)))
+                self.context.logger.debug(
+                    "%s <-in-- %s" % (session.client_id, repr(packet))
+                )
             else:
                 self.context.logger.debug("<-in-- %s" % repr(packet))
 
     async def on_mqtt_packet_sent(self, *args, **kwargs):
-        packet = kwargs.get('packet')
-        session = kwargs.get('session', None)
+        packet = kwargs.get("packet")
+        session = kwargs.get("session", None)
         if self.context.logger.isEnabledFor(logging.DEBUG):
             if session:
-                self.context.logger.debug("%s -out-> %s" % (session.client_id, repr(packet)))
+                self.context.logger.debug(
+                    "%s -out-> %s" % (session.client_id, repr(packet))
+                )
             else:
                 self.context.logger.debug("-out-> %s" % repr(packet))

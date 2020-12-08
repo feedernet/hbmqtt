@@ -10,7 +10,9 @@ from hbmqtt.plugins.manager import BaseContext
 from hbmqtt.plugins.authentication import AnonymousAuthPlugin, FileAuthPlugin
 from hbmqtt.session import Session
 
-formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+formatter = (
+    "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+)
 logging.basicConfig(level=logging.DEBUG, format=formatter)
 
 
@@ -21,11 +23,7 @@ class TestAnonymousAuthPlugin(unittest.TestCase):
     def test_allow_anonymous(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            'auth': {
-                'allow-anonymous': True
-            }
-        }
+        context.config = {"auth": {"allow-anonymous": True}}
         s = Session()
         s.username = ""
         auth_plugin = AnonymousAuthPlugin(context)
@@ -35,11 +33,7 @@ class TestAnonymousAuthPlugin(unittest.TestCase):
     def test_disallow_anonymous(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            'auth': {
-                'allow-anonymous': False
-            }
-        }
+        context.config = {"auth": {"allow-anonymous": False}}
         s = Session()
         s.username = ""
         auth_plugin = AnonymousAuthPlugin(context)
@@ -49,11 +43,7 @@ class TestAnonymousAuthPlugin(unittest.TestCase):
     def test_allow_nonanonymous(self):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            'auth': {
-                'allow-anonymous': False
-            }
-        }
+        context.config = {"auth": {"allow-anonymous": False}}
         s = Session()
         s.username = "test"
         auth_plugin = AnonymousAuthPlugin(context)
@@ -69,8 +59,10 @@ class TestFileAuthPlugin(unittest.TestCase):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
         context.config = {
-            'auth': {
-                'password-file': os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")
+            "auth": {
+                "password-file": os.path.join(
+                    os.path.dirname(os.path.realpath(__file__)), "passwd"
+                )
             }
         }
         s = Session()
@@ -84,8 +76,10 @@ class TestFileAuthPlugin(unittest.TestCase):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
         context.config = {
-            'auth': {
-                'password-file': os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")
+            "auth": {
+                "password-file": os.path.join(
+                    os.path.dirname(os.path.realpath(__file__)), "passwd"
+                )
             }
         }
         s = Session()
@@ -99,8 +93,10 @@ class TestFileAuthPlugin(unittest.TestCase):
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
         context.config = {
-            'auth': {
-                'password-file': os.path.join(os.path.dirname(os.path.realpath(__file__)), "passwd")
+            "auth": {
+                "password-file": os.path.join(
+                    os.path.dirname(os.path.realpath(__file__)), "passwd"
+                )
             }
         }
         s = Session()

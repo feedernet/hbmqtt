@@ -2,7 +2,7 @@
 #
 # See the file license.txt for copying permission.
 
-__all__ = ['get_plugin_manager', 'BaseContext', 'PluginManager']
+__all__ = ["get_plugin_manager", "BaseContext", "PluginManager"]
 
 import pkg_resources
 import logging
@@ -13,7 +13,7 @@ import sys
 from collections import namedtuple
 
 
-Plugin = namedtuple('Plugin', ['name', 'ep', 'object'])
+Plugin = namedtuple("Plugin", ["name", "ep", "object"])
 
 plugins_manager = dict()
 
@@ -35,6 +35,7 @@ class PluginManager:
     Plugins are loaded for a given namespace (group).
     This plugin manager uses coroutines to run plugin call asynchronously in an event queue
     """
+
     def __init__(self, namespace, context, loop=None):
         global plugins_manager
         if loop is not None:
@@ -76,7 +77,9 @@ class PluginManager:
         except ImportError as ie:
             self.logger.warning("Plugin %r import failed: %s" % (ep, ie))
         except pkg_resources.UnknownExtra as ue:
-            self.logger.warning("Plugin %r dependencies resolution failed: %s" % (ep, ue))
+            self.logger.warning(
+                "Plugin %r dependencies resolution failed: %s" % (ep, ue)
+            )
 
     def get_plugin(self, name):
         """
@@ -140,15 +143,19 @@ class PluginManager:
 
                     task.add_done_callback(clean_fired_events)
                 except AssertionError:
-                    self.logger.error("Method '%s' on plugin '%s' is not a coroutine" %
-                                      (event_method_name, plugin.name))
+                    self.logger.error(
+                        "Method '%s' on plugin '%s' is not a coroutine"
+                        % (event_method_name, plugin.name)
+                    )
 
         self._fired_events.extend(tasks)
         if wait:
             if tasks:
                 await asyncio.wait(tasks, loop=self._loop)
         if self.logger.isEnabledFor(logging.DEBUG):
-            self.logger.debug("Plugins len(_fired_events)=%d" % (len(self._fired_events)))
+            self.logger.debug(
+                "Plugins len(_fired_events)=%d" % (len(self._fired_events))
+            )
 
     async def map(self, coro, *args, **kwargs):
         """
@@ -161,7 +168,7 @@ class PluginManager:
         :param kwargs: arguments to pass to coro
         :return: dict containing return from coro call for each plugin
         """
-        p_list = kwargs.pop('filter_plugins', None)
+        p_list = kwargs.pop("filter_plugins", None)
         if p_list is None:
             p_list = [p.name for p in self.plugins]
         tasks = []
@@ -174,8 +181,10 @@ class PluginManager:
                         tasks.append(self._schedule_coro(coro_instance))
                         plugins_list.append(plugin)
                     except AssertionError:
-                        self.logger.error("Method '%r' on plugin '%s' is not a coroutine" %
-                                          (coro, plugin.name))
+                        self.logger.error(
+                            "Method '%r' on plugin '%s' is not a coroutine"
+                            % (coro, plugin.name)
+                        )
         if tasks:
             ret_list = await asyncio.gather(*tasks, loop=self._loop)
             # Create result map plugin=>ret
@@ -188,7 +197,7 @@ class PluginManager:
     async def _call_coro(plugin, coro_name, *args, **kwargs):
         try:
             coro = getattr(plugin.object, coro_name, None)(*args, **kwargs)
-            return (await coro)
+            return await coro
         except TypeError:
             # Plugin doesn't implement coro_name
             return None
@@ -201,4 +210,4 @@ class PluginManager:
         :param kwargs:
         :return:
         """
-        return (await self.map(self._call_coro, coro_name, *args, **kwargs))
+        return await self.map(self._call_coro, coro_name, *args, **kwargs)

@@ -10,7 +10,9 @@ import sqlite3
 from hbmqtt.plugins.manager import BaseContext
 from hbmqtt.plugins.persistence import SQLitePlugin
 
-formatter = "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+formatter = (
+    "[%(asctime)s] %(name)s {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
+)
 logging.basicConfig(level=logging.DEBUG, format=formatter)
 
 
@@ -22,11 +24,7 @@ class TestSQLitePlugin(unittest.TestCase):
         dbfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), "test.db")
         context = BaseContext()
         context.logger = logging.getLogger(__name__)
-        context.config = {
-            'persistence': {
-                'file': dbfile
-            }
-        }
+        context.config = {"persistence": {"file": dbfile}}
         SQLitePlugin(context)
 
         conn = sqlite3.connect(dbfile)
