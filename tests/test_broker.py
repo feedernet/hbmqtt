@@ -719,7 +719,7 @@ class BrokerTest(unittest.TestCase):
                 message = None
                 try:
                     message = await sub_client.deliver_message(timeout=2)
-                except Exception as e:
+                except Exception:  # noqa: E722
                     pass
                 self.assertIsNone(message)
                 await sub_client.disconnect()
@@ -758,7 +758,7 @@ class BrokerTest(unittest.TestCase):
                 message = None
                 try:
                     message = await sub_client.deliver_message(timeout=2)
-                except Exception as e:
+                except Exception:  # noqa: E722
                     pass
                 self.assertIsNone(message)
                 await sub_client.disconnect()

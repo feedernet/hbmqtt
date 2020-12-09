@@ -8,7 +8,6 @@ import pkg_resources
 import logging
 import asyncio
 import copy
-import sys
 
 from collections import namedtuple
 

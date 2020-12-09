@@ -90,7 +90,7 @@ class MQTTClientTest(unittest.TestCase):
                 config = {"auto_reconnect": False}
                 client = MQTTClient(config=config)
                 await client.connect(f"mqtt://127.0.0.1:{self._tcp_port}/")
-            except ConnectException as e:
+            except ConnectException:
                 future.set_result(True)
 
         future = asyncio.Future(loop=self.loop)

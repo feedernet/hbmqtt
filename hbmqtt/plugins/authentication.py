@@ -2,7 +2,6 @@
 #
 # See the file license.txt for copying permission.
 import logging
-import asyncio
 from passlib.apps import custom_app_context as pwd_context
 
 
@@ -70,12 +69,12 @@ class FileAuthPlugin(BaseAuthPlugin):
         password_file = self.auth_config.get("password-file", None)
         if password_file:
             try:
-                with open(password_file) as f:
+                with open(password_file) as open_file:
                     self.context.logger.debug(
                         "Reading user database from %s" % password_file
                     )
-                    for l in f:
-                        line = l.strip()
+                    for line in open_file:
+                        line = line.strip()
                         if not line.startswith("#"):  # Allow comments in files
                             (username, pwd_hash) = line.split(sep=":", maxsplit=3)
                             if username:

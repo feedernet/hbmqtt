@@ -261,7 +261,7 @@ class ProtocolHandler:
             else:
                 try:
                     self.session.delivered_message_queue.put_nowait(app_message)
-                except:
+                except:  # noqa: E722
                     self.logger.warning(
                         "delivered messages queue full. QOS_0 message discarded"
                     )

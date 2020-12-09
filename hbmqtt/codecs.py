@@ -23,7 +23,7 @@ def bytes_to_int(data):
     """
     try:
         return int.from_bytes(data, byteorder="big")
-    except:
+    except:  # noqa: E722
         return data
 
 
@@ -69,7 +69,7 @@ async def decode_string(reader) -> bytes:
         byte_str = await read_or_raise(reader, str_length[0])
         try:
             return byte_str.decode(encoding="utf-8")
-        except:
+        except:  # noqa: E722
             return str(byte_str)
     else:
         return ""

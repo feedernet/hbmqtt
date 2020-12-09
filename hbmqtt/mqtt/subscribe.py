@@ -55,7 +55,7 @@ class SubscribePayload(MQTTPayload):
                 qos = bytes_to_int(qos_byte)
                 topics.append((topic, qos))
                 read_bytes += 2 + len(topic.encode("utf-8")) + 1
-            except NoDataException as exc:
+            except NoDataException:
                 break
         return cls(topics)
 

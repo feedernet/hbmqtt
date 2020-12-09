@@ -5,7 +5,6 @@ import logging
 import ssl
 import websockets
 import asyncio
-import sys
 import re
 from asyncio import CancelledError
 from collections import deque
@@ -297,10 +296,9 @@ class Broker:
                             )
 
                     address, s_port = listener["bind"].split(":")
-                    port = 0
                     try:
                         port = int(s_port)
-                    except ValueError as ve:
+                    except ValueError:
                         raise BrokerException(
                             "Invalid port value in bind value: %s" % listener["bind"]
                         )
@@ -848,8 +846,8 @@ class Broker:
             # else use regex
             match_pattern = re.compile(
                 a_filter.replace("#", ".*")
-                .replace("$", "\$")
-                .replace("+", "[/\$\s\w\d]+")
+                .replace("$", "\$")  # noqa: W605
+                .replace("+", "[/\$\s\w\d]+")  # noqa: W605
             )
             return match_pattern.match(topic)
 
@@ -861,7 +859,7 @@ class Broker:
                     task = running_tasks.popleft()
                     try:
                         task.result()  # make asyncio happy and collect results
-                    except Exception:
+                    except:  # noqa: E722
                         pass
                 broadcast = await self._broadcast_queue.get()
                 if self.logger.isEnabledFor(logging.DEBUG):
