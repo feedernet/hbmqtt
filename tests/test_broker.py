@@ -774,7 +774,7 @@ class BrokerTest(unittest.TestCase):
         if future.exception():
             raise future.exception()
 
-    """
+
     @patch('hbmqtt.broker.PluginManager', new_callable=AsyncMock)
     def test_client_publish_retain_subscribe(self, MockPluginManager):
         async def test_coro():
@@ -783,7 +783,7 @@ class BrokerTest(unittest.TestCase):
                 await broker.start()
                 self.assertTrue(broker.transitions.is_started())
                 sub_client = MQTTClient()
-                await sub_client.connect(f'mqtt://127.0.0.1:{self._test_port}', cleansession=False)
+                await sub_client.connect(f'mqtt://127.0.0.1:{self._test_port}', cleansession=True)
                 ret = await sub_client.subscribe([('/qos0', QOS_0), ('/qos1', QOS_1), ('/qos2', QOS_2)])
                 self.assertEquals(ret, [QOS_0, QOS_1, QOS_2])
                 await sub_client.disconnect()
@@ -795,12 +795,13 @@ class BrokerTest(unittest.TestCase):
                 await sub_client.reconnect()
                 for qos in [QOS_0, QOS_1, QOS_2]:
                     log.debug("TEST QOS: %d" % qos)
+                    await sub_client.subscribe([(f'/qos{qos}', qos)])
                     message = await sub_client.deliver_message()
                     log.debug("Message: " + repr(message.publish_packet))
                     self.assertIsNotNone(message)
-                    # self.assertEquals(message.topic, '/qos%s' % qos)
+                    self.assertEquals(message.topic, '/qos%s' % qos)
                     self.assertEquals(message.data, b'data')
-                    # self.assertEquals(message.qos, qos)
+                    self.assertEquals(message.qos, qos)
                 await sub_client.disconnect()
                 await asyncio.sleep(0.1)
                 await broker.shutdown()
@@ -813,7 +814,7 @@ class BrokerTest(unittest.TestCase):
         self.loop.run_until_complete(test_coro())
         if future.exception():
             raise future.exception()
-    """
+
 
     async def _client_publish(self, topic, data, qos, retain=False):
         pub_client = MQTTClient()
