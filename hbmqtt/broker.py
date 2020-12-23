@@ -479,9 +479,9 @@ class Broker:
                         "Client %s is already connected, performing take-over.",
                         client_session.client_id,
                     )
-                    old_session = self._sessions[client_session.client_id]
-                    await old_session[1].handle_connection_closed()
-                    await old_session[1].stop()
+                    old_handler = self._sessions[client_session.client_id][1]
+                    await old_handler.handle_connection_closed()
+                    await old_handler.stop()
                     break
                 else:
                     self.logger.warning(
