@@ -406,7 +406,6 @@ class Broker:
     ):
         # Wait for connection available on listener
         server = self._servers.get(listener_name, None)
-        print(self._sessions)
         if not server:
             raise BrokerException("Invalid listener name '%s'" % listener_name)
         await server.acquire_connection()
@@ -481,6 +480,7 @@ class Broker:
                         client_session.client_id,
                     )
                     old_session = self._sessions[client_session.client_id]
+                    await old_session[1].handle_connection_closed()
                     await old_session[1].stop()
                     break
                 else:
